@@ -1,0 +1,101 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This API is used to manager aws ec2.",
+        "title": "Manage EC2 API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/v1/ec2",
+    "paths": {
+        "/create": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Cretae a rc2 instance",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Instance"
+                ],
+                "summary": "Create a ec2 instance",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "instance name",
+                        "name": "instanceName",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "user name",
+                        "name": "userName",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "source",
+                        "name": "source",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "instance image id",
+                        "name": "instanceImageId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "instance type",
+                        "name": "instanceType",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "instance",
+                        "name": "cuSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "instance",
+                        "name": "diskSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "if dry run",
+                        "name": "dryRun",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

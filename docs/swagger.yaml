@@ -1,0 +1,67 @@
+basePath: /v1/ec2
+host: localhost:8080
+info:
+  contact: {}
+  description: This API is used to manager aws ec2.
+  title: Manage EC2 API
+  version: "1.0"
+paths:
+  /create:
+    post:
+      consumes:
+      - application/json
+      description: Cretae a rc2 instance
+      parameters:
+      - description: instance name
+        in: query
+        name: instanceName
+        required: true
+        type: string
+      - description: user name
+        in: query
+        name: userName
+        required: true
+        type: string
+      - description: source
+        in: query
+        name: source
+        type: string
+      - description: instance image id
+        in: query
+        name: instanceImageId
+        type: string
+      - description: instance type
+        in: query
+        name: instanceType
+        type: string
+      - description: instance
+        in: query
+        name: cuSize
+        type: string
+      - description: instance
+        in: query
+        name: diskSize
+        type: string
+      - description: if dry run
+        in: query
+        name: dryRun
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      summary: Create a ec2 instance
+      tags:
+      - Instance
+securityDefinitions:
+  Bearer:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
