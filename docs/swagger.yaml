@@ -12,40 +12,28 @@ paths:
       - application/json
       description: Cretae a rc2 instance
       parameters:
-      - description: instance name
-        in: query
-        name: instanceName
-        required: true
-        type: string
       - description: user name
         in: query
-        name: userName
+        name: username
         required: true
-        type: string
-      - description: source
-        in: query
-        name: source
         type: string
       - description: instance image id
         in: query
-        name: instanceImageId
+        name: imageId
         type: string
       - description: instance type
         in: query
         name: instanceType
         type: string
-      - description: instance
-        in: query
-        name: cuSize
-        type: string
-      - description: instance
+      - description: instance diskSize
         in: query
         name: diskSize
         type: string
-      - description: if dry run
+      - description: user department
         in: query
-        name: dryRun
-        type: boolean
+        name: department
+        required: true
+        type: string
       produces:
       - application/json
       responses:

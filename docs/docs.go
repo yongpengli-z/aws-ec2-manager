@@ -37,28 +37,15 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "instance name",
-                        "name": "instanceName",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
                         "description": "user name",
-                        "name": "userName",
+                        "name": "username",
                         "in": "query",
                         "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "source",
-                        "name": "source",
-                        "in": "query"
                     },
                     {
                         "type": "string",
                         "description": "instance image id",
-                        "name": "instanceImageId",
+                        "name": "imageId",
                         "in": "query"
                     },
                     {
@@ -69,21 +56,16 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "instance",
-                        "name": "cuSize",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "instance",
+                        "description": "instance diskSize",
                         "name": "diskSize",
                         "in": "query"
                     },
                     {
-                        "type": "boolean",
-                        "description": "if dry run",
-                        "name": "dryRun",
-                        "in": "query"
+                        "type": "string",
+                        "description": "user department",
+                        "name": "department",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
