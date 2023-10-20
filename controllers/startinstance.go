@@ -57,8 +57,8 @@ func StartInstance(c *gin.Context, cfg *aws.Config) {
 
 	result, err := MakeStart(context.TODO(), client, input)
 	if err != nil {
-		log.Println("Got an error startping instance: ", err)
-		ReturnErrorBody(c, 1, "Got an error startping instance.", err)
+		log.Println("Got an error starting instance: ", err)
+		ReturnErrorBody(c, 1, "Got an error starting instance.", err)
 		return
 	}
 
