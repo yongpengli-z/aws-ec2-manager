@@ -71,6 +71,30 @@ paths:
       summary: Create a keyPair
       tags:
       - Instance
+  /stop:
+    post:
+      consumes:
+      - application/json
+      description: Stop a EC2 Instance.
+      parameters:
+      - description: instance Id
+        in: query
+        name: instanceId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      summary: Stop a EC2 Instance
+      tags:
+      - Instance
 securityDefinitions:
   Bearer:
     in: header
