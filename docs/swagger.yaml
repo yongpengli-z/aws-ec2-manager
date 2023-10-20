@@ -71,6 +71,30 @@ paths:
       summary: Create a keyPair
       tags:
       - Instance
+  /reboot:
+    post:
+      consumes:
+      - application/json
+      description: Reboot a EC2 Instance.
+      parameters:
+      - description: instance Id
+        in: query
+        name: instanceId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      summary: Reboot a EC2 Instance
+      tags:
+      - Instance
   /start:
     post:
       consumes:
@@ -117,6 +141,30 @@ paths:
       security:
       - Bearer: []
       summary: Stop a EC2 Instance
+      tags:
+      - Instance
+  /terminate:
+    post:
+      consumes:
+      - application/json
+      description: Terminate a EC2 Instance.
+      parameters:
+      - description: instance Id
+        in: query
+        name: instanceId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      summary: Terminate a EC2 Instance
       tags:
       - Instance
 securityDefinitions:

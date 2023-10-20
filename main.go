@@ -61,6 +61,14 @@ func main() {
 		controllers.StartInstance(c, &cfg)
 	})
 
+	group.POST("/reboot", func(c *gin.Context) {
+		controllers.RebootInstance(c, &cfg)
+	})
+
+	group.POST("/terminate", func(c *gin.Context) {
+		controllers.TerminateInstance(c, &cfg)
+	})
+
 	// group.POST("/stop", controllers.JWTAuthMiddleware(), func(c *gin.Context) {
 	// 	controllers.AddTemplate(c)
 

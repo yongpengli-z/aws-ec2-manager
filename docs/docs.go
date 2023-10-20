@@ -117,6 +117,44 @@ const docTemplate = `{
                 }
             }
         },
+        "/reboot": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Reboot a EC2 Instance.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Instance"
+                ],
+                "summary": "Reboot a EC2 Instance",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "instance Id",
+                        "name": "instanceId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/start": {
             "post": {
                 "security": [
@@ -173,6 +211,44 @@ const docTemplate = `{
                     "Instance"
                 ],
                 "summary": "Stop a EC2 Instance",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "instance Id",
+                        "name": "instanceId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/terminate": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Terminate a EC2 Instance.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Instance"
+                ],
+                "summary": "Terminate a EC2 Instance",
                 "parameters": [
                     {
                         "type": "string",
