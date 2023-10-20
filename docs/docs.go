@@ -55,7 +55,7 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "instance diskSize",
                         "name": "diskSize",
                         "in": "query"
@@ -64,6 +64,44 @@ const docTemplate = `{
                         "type": "string",
                         "description": "user department",
                         "name": "department",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/key": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Cretae a rsa keyPair for the user.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Instance"
+                ],
+                "summary": "Create a keyPair",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user name",
+                        "name": "username",
                         "in": "query",
                         "required": true
                     }

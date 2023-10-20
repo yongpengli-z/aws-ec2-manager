@@ -28,7 +28,7 @@ paths:
       - description: instance diskSize
         in: query
         name: diskSize
-        type: string
+        type: integer
       - description: user department
         in: query
         name: department
@@ -45,6 +45,30 @@ paths:
       security:
       - Bearer: []
       summary: Create a ec2 instance
+      tags:
+      - Instance
+  /key:
+    post:
+      consumes:
+      - application/json
+      description: Cretae a rsa keyPair for the user.
+      parameters:
+      - description: user name
+        in: query
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      summary: Create a keyPair
       tags:
       - Instance
 securityDefinitions:

@@ -49,6 +49,10 @@ func main() {
 		controllers.CreateInstance(c, &cfg)
 	})
 
+	group.POST("/key", func(c *gin.Context) {
+		controllers.CreateKeyPair(c, &cfg)
+	})
+
 	// group.POST("/stop", controllers.JWTAuthMiddleware(), func(c *gin.Context) {
 	// 	controllers.AddTemplate(c)
 

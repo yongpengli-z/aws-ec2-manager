@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"net/http"
 	"log"
+	"net/http"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
@@ -13,12 +13,11 @@ import (
 )
 
 type CreateParams struct {
-	DryRun       bool   `json:"dryRun" form:"dryRun"`
-	InstanceName string `json:"instanceName" form:"instanceName"`
+	DryRun bool `json:"dryRun" form:"dryRun"`
+	// InstanceName string `json:"instanceName" form:"instanceName"`
 	UserName     string `json:"username" form:"username" binding:"required"`
 	Source       string
 	ImageId      string `json:"imageId" form:"imageId"`
-	// Architecture    string `json:"architecture" form:"architecture"`
 	InstanceType string `json:"instanceType" form:"instanceType"`
 	DiskSize     int32  `json:"diskSize" form:"diskSize"`
 	Department   string `json:"department" form:"department" binding:"required"`
@@ -32,9 +31,13 @@ type EC2CreateInstanceAPI interface {
 	CreateTags(ctx context.Context,
 		params *ec2.CreateTagsInput,
 		optFns ...func(*ec2.Options)) (*ec2.CreateTagsOutput, error)
+
+	// CreateKeyPair(ctx context.Context,
+	// 	params *ec2.CreateKeyPairInput,
+	// 	optFns ...func(*ec2.Options)) *ec2.CreateKeyPairOutput
 }
 
-// SendNotification godoc
+// Ec2Manager godoc
 // @Summary     Create a ec2 instance
 // @Description Cretae a rc2 instance
 // @Tags        Instance
@@ -54,9 +57,9 @@ func CreateInstance(c *gin.Context, cfg *aws.Config) {
 
 	createParam := &CreateParams{
 		Source:       "qtp",
-		ImageId:      "ami-0556fb70",
+		ImageId:      "ami-09ac7e749b0a8d2a1",
 		InstanceType: "t2.micro",
-		DryRun:       true,
+		DryRun:       false,
 		DiskSize:     50,
 	}
 
@@ -67,7 +70,7 @@ func CreateInstance(c *gin.Context, cfg *aws.Config) {
 		return
 	}
 
-	log.Println(createParam)
+	log.Println("params: ", createParam)
 
 	keyName := createParam.UserName + "-" + createParam.Source
 
@@ -86,13 +89,14 @@ func CreateInstance(c *gin.Context, cfg *aws.Config) {
 		MinCount:            aws.Int32(1),
 		MaxCount:            aws.Int32(1),
 		BlockDeviceMappings: []types.BlockDeviceMapping{*blockDeviceMapping},
-		SecurityGroupIds: []string{"sg-0f044b5adec791eb3"},
+		SecurityGroupIds:    []string{"sg-0f044b5adec791eb3"},
 		// SecurityGroups:   []string{"ec2-default-sg"},
 		SubnetId: aws.String("subnet-020e66b15e0965ace"),
 		KeyName:  aws.String(keyName),
 		DryRun:   &createParam.DryRun,
 	}
 
+	data := make(map[string]string)
 
 	result, err := MakeInstance(context.TODO(), client, input)
 	if err != nil {
@@ -100,15 +104,13 @@ func CreateInstance(c *gin.Context, cfg *aws.Config) {
 		ReturnErrorBody(c, 1, "Got an error creating an instance.", err)
 		return
 	} else {
-		log.Println(*result.Instances[0].InstanceId, " instance created.")
+		data["instanceId"] = fmt.Sprintf("%v", *result.Instances[0].InstanceId)
+		data["instanceIP"] = fmt.Sprintf("%v", *result.Instances[0].PrivateIpAddress)
+		log.Println("Instance created, instanceId: ", data["instanceId"])
 	}
 
-	data := make(map[string]string)
-	data["instanceId"] = fmt.Sprintf("%v", *result.Instances[0].InstanceId)
-	data["instanceIP"] = fmt.Sprintf("%v", *result.Instances[0].PrivateIpAddress)
-
 	tagInput := &ec2.CreateTagsInput{
-		Resources: []string{*result.Instances[0].InstanceId},
+		Resources: []string{data["instanceId"]},
 		Tags: []types.Tag{
 			{
 				Key:   aws.String("cost/owner"),
@@ -129,7 +131,7 @@ func CreateInstance(c *gin.Context, cfg *aws.Config) {
 
 	if err != nil {
 		log.Println("Got an error tagging the instance: ", err)
-		message := "Instance created, but tagging the instance faild. instanceId: " + data["instanceId"] + "IP: " + data["instanceIP"]
+		message := "Instance created, but tagging the instance failed. instanceId: " + data["instanceId"] + "IP: " + data["instanceIP"]
 		ReturnErrorBody(c, 2, message, err)
 		return
 	} else {

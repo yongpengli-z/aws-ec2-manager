@@ -1,0 +1,5 @@
+.env
+aws-ec2-manager
+vendor
+notification-api.yaml
+deploy.yaml
