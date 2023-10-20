@@ -57,6 +57,10 @@ func main() {
 		controllers.StopInstance(c, &cfg)
 	})
 
+	group.POST("/start", func(c *gin.Context) {
+		controllers.StartInstance(c, &cfg)
+	})
+
 	// group.POST("/stop", controllers.JWTAuthMiddleware(), func(c *gin.Context) {
 	// 	controllers.AddTemplate(c)
 

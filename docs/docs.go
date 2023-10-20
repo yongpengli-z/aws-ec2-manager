@@ -117,6 +117,44 @@ const docTemplate = `{
                 }
             }
         },
+        "/start": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Start a EC2 Instance.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Instance"
+                ],
+                "summary": "Start a EC2 Instance",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "instance Id",
+                        "name": "instanceId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/stop": {
             "post": {
                 "security": [

@@ -12,30 +12,30 @@ import (
 	// "github.com/aws/aws-sdk-go-v2/service/ec2/types"
 )
 
-type EC2StopInstancesAPI interface {
-	StopInstances(ctx context.Context,
-		params *ec2.StopInstancesInput,
-		optFns ...func(*ec2.Options)) (*ec2.StopInstancesOutput, error)
+type EC2StartInstancesAPI interface {
+	StartInstances(ctx context.Context,
+		params *ec2.StartInstancesInput,
+		optFns ...func(*ec2.Options)) (*ec2.StartInstancesOutput, error)
 }
 
-type StopParams struct {
+type StartParams struct {
 	DryRun     bool   `json:"dryRun" form:"dryRun"`
 	InstanceId string `json:"instanceId" form:"instanceId" binding:"required"`
 }
 
 // Ec2Manager godoc
-// @Summary     Stop a EC2 Instance
-// @Description Stop a EC2 Instance.
+// @Summary     Start a EC2 Instance
+// @Description Start a EC2 Instance.
 // @Tags        Instance
 // @Accept      json
 // @Produce     json
 // @Param       instanceId          query    string   true    "instance Id"
 // @Success     200               {object} map[string]any
-// @Router      /stop              [post]
+// @Router      /start              [post]
 // @Security    Bearer
-func StopInstance(c *gin.Context, cfg *aws.Config) {
+func StartInstance(c *gin.Context, cfg *aws.Config) {
 	client := ec2.NewFromConfig(*cfg)
-	s := &StopParams{
+	s := &StartParams{
 		DryRun: false,
 	}
 
@@ -48,22 +48,22 @@ func StopInstance(c *gin.Context, cfg *aws.Config) {
 
 	log.Println("params: ", s)
 
-	input := &ec2.StopInstancesInput{
+	input := &ec2.StartInstancesInput{
 		InstanceIds: []string{
 			s.InstanceId,
 		},
 		DryRun: aws.Bool(s.DryRun),
 	}
 
-	result, err := MakeStop(context.TODO(), client, input)
+	result, err := MakeStart(context.TODO(), client, input)
 	if err != nil {
-		log.Println("Got an error stopping instance: ", err)
-		ReturnErrorBody(c, 1, "Got an error stopping instance.", err)
+		log.Println("Got an error startping instance: ", err)
+		ReturnErrorBody(c, 1, "Got an error startping instance.", err)
 		return
 	}
 
 	data := make(map[string]string)
-	data["instanceId"] = *result.StoppingInstances[0].InstanceId
+	data["instanceId"] = *result.StartingInstances[0].InstanceId
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
@@ -72,15 +72,7 @@ func StopInstance(c *gin.Context, cfg *aws.Config) {
 	})
 }
 
-func MakeStop(c context.Context, api EC2StopInstancesAPI, input *ec2.StopInstancesInput) (*ec2.StopInstancesOutput, error) {
-	resp, err := api.StopInstances(c, input)
-
-	// var apiErr smithy.APIError
-	// if errors.As(err, &apiErr) && apiErr.ErrorCode() == "DryRunOperation" {
-	// 	fmt.Println("User has permission to stop instances.")
-	// 	input.DryRun = aws.Bool(false)
-	// 	return api.StopInstances(c, input)
-	// }
-
+func MakeStart(c context.Context, api EC2StartInstancesAPI, input *ec2.StartInstancesInput) (*ec2.StartInstancesOutput, error) {
+	resp, err := api.StartInstances(c, input)
 	return resp, err
 }
