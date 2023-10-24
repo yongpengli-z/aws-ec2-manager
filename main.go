@@ -73,23 +73,10 @@ func main() {
 		controllers.DescribeInstance(c, &cfg)
 	})
 
-	// group.POST("/stop", controllers.JWTAuthMiddleware(), func(c *gin.Context) {
-	// 	controllers.AddTemplate(c)
 
+	// group.POST("/create", controllers.JWTAuthMiddleware(), func(c *gin.Context) {
+	// 	controllers.CreateInstance(c, &cfg)
 	// })
-	// group.POST("/resume", controllers.JWTAuthMiddleware(), func(c *gin.Context) {
-	// 	controllers.ListAllTemplate(c)
-	// })
-
-	// group.POST("/drop", func(c *gin.Context) {
-	// 	controllers.AuthHandler(c)
-	// })
-
-	// group.GET("/query", func(c *gin.Context) {
-	// 	controllers.AddUser(c)
-	// })
-
-	// group.GET("/healthy", controllers.JWTAuthMiddleware(), controllers.RefreshHandler)
 
 	router.Run() // 0.0.0.0:8080
 }
