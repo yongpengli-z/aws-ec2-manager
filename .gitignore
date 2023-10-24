@@ -3,3 +3,4 @@ aws-ec2-manager
 vendor
 notification-api.yaml
 deploy.yaml
+nohup.out

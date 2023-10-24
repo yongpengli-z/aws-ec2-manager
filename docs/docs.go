@@ -79,6 +79,44 @@ const docTemplate = `{
                 }
             }
         },
+        "/describe": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Describe a EC2 Instance.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Instance"
+                ],
+                "summary": "Describe a EC2 Instance",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "instance Id",
+                        "name": "instanceId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/key": {
             "post": {
                 "security": [

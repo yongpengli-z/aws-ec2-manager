@@ -69,6 +69,10 @@ func main() {
 		controllers.TerminateInstance(c, &cfg)
 	})
 
+	group.POST("/describe", func(c *gin.Context) {
+		controllers.DescribeInstance(c, &cfg)
+	})
+
 	// group.POST("/stop", controllers.JWTAuthMiddleware(), func(c *gin.Context) {
 	// 	controllers.AddTemplate(c)
 

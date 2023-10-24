@@ -47,6 +47,30 @@ paths:
       summary: Create a ec2 instance
       tags:
       - Instance
+  /describe:
+    post:
+      consumes:
+      - application/json
+      description: Describe a EC2 Instance.
+      parameters:
+      - description: instance Id
+        in: query
+        name: instanceId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      summary: Describe a EC2 Instance
+      tags:
+      - Instance
   /key:
     post:
       consumes:
