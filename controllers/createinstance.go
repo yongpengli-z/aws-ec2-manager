@@ -20,6 +20,7 @@ type CreateParams struct {
 	ImageId      string `json:"imageId" form:"imageId"`
 	InstanceType string `json:"instanceType" form:"instanceType"`
 	DiskSize     int32  `json:"diskSize" form:"diskSize"`
+	DeviceName   string `json:"deviceName" form:"deviceName"`
 	Department   string `json:"department" form:"department" binding:"required"`
 }
 
@@ -31,10 +32,6 @@ type EC2CreateInstanceAPI interface {
 	CreateTags(ctx context.Context,
 		params *ec2.CreateTagsInput,
 		optFns ...func(*ec2.Options)) (*ec2.CreateTagsOutput, error)
-
-	// CreateKeyPair(ctx context.Context,
-	// 	params *ec2.CreateKeyPairInput,
-	// 	optFns ...func(*ec2.Options)) *ec2.CreateKeyPairOutput
 }
 
 // Ec2Manager godoc
@@ -47,6 +44,7 @@ type EC2CreateInstanceAPI interface {
 // @Param       imageId           query    string   false   "instance image id"
 // @Param       instanceType      query    string   false   "instance type"
 // @Param       diskSize          query    int32    false   "instance diskSize"
+// @Param       deviceName        query    string   false   "instance deviceName"
 // @Param       department        query    string   true   "user department"
 // @Success     200               {object} map[string]any
 // @Router      /create           [post]
@@ -61,6 +59,7 @@ func CreateInstance(c *gin.Context, cfg *aws.Config) {
 		InstanceType: "t2.micro",
 		DryRun:       false,
 		DiskSize:     50,
+		DeviceName:   "/dev/xvda",
 	}
 
 	err := c.ShouldBind(createParam)
@@ -75,7 +74,7 @@ func CreateInstance(c *gin.Context, cfg *aws.Config) {
 	keyName := createParam.UserName + "-" + createParam.Source
 
 	blockDeviceMapping := &types.BlockDeviceMapping{
-		DeviceName: aws.String("/dev/xvda"),
+		DeviceName: aws.String(createParam.DeviceName),
 		Ebs: &types.EbsBlockDevice{
 			DeleteOnTermination: aws.Bool(true),
 			VolumeSize:          aws.Int32(createParam.DiskSize),

@@ -29,6 +29,10 @@ paths:
         in: query
         name: diskSize
         type: integer
+      - description: instance deviceName
+        in: query
+        name: deviceName
+        type: string
       - description: user department
         in: query
         name: department

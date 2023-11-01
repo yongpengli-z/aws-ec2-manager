@@ -62,6 +62,12 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "description": "instance deviceName",
+                        "name": "deviceName",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "description": "user department",
                         "name": "department",
                         "in": "query",
