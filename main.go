@@ -73,6 +73,9 @@ func main() {
 		controllers.DescribeInstance(c, &cfg)
 	})
 
+	group.POST("/list", func(c *gin.Context) {
+		controllers.ListInstance(c, &cfg)
+	})
 
 	// group.POST("/create", controllers.JWTAuthMiddleware(), func(c *gin.Context) {
 	// 	controllers.CreateInstance(c, &cfg)

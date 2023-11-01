@@ -15,13 +15,14 @@ import (
 type CreateParams struct {
 	DryRun bool `json:"dryRun" form:"dryRun"`
 	// InstanceName string `json:"instanceName" form:"instanceName"`
-	UserName     string `json:"username" form:"username" binding:"required"`
-	Source       string
-	ImageId      string `json:"imageId" form:"imageId"`
-	InstanceType string `json:"instanceType" form:"instanceType"`
-	DiskSize     int32  `json:"diskSize" form:"diskSize"`
-	DeviceName   string `json:"deviceName" form:"deviceName"`
-	Department   string `json:"department" form:"department" binding:"required"`
+	UserName       string `json:"username" form:"username" binding:"required"`
+	Source         string
+	ImageId        string `json:"imageId" form:"imageId"`
+	InstanceType   string `json:"instanceType" form:"instanceType"`
+	RootDiskSize   int32  `json:"rootDiskSize" form:"rootDiskSize"`
+	DeviceDiskSize int32  `json:"deviceDiskSize" form:"deviceDiskSize"`
+	DeviceName     string
+	Department     string `json:"department" form:"department" binding:"required"`
 }
 
 type EC2CreateInstanceAPI interface {
@@ -43,9 +44,9 @@ type EC2CreateInstanceAPI interface {
 // @Param       username          query    string   true    "user name"
 // @Param       imageId           query    string   false   "instance image id"
 // @Param       instanceType      query    string   false   "instance type"
-// @Param       diskSize          query    int32    false   "instance diskSize"
-// @Param       deviceName        query    string   false   "instance deviceName"
-// @Param       department        query    string   true   "user department"
+// @Param       rootDiskSize      query    int32    false   "instance rootDiskSize"
+// @Param       deviceDiskSize    query    int32    false   "instance deviceDiskSize"
+// @Param       department        query    string   true    "user department"
 // @Success     200               {object} map[string]any
 // @Router      /create           [post]
 // @Security    Bearer
@@ -54,12 +55,13 @@ func CreateInstance(c *gin.Context, cfg *aws.Config) {
 	client := ec2.NewFromConfig(*cfg)
 
 	createParam := &CreateParams{
-		Source:       "qtp",
-		ImageId:      "ami-09ac7e749b0a8d2a1",
-		InstanceType: "t2.micro",
-		DryRun:       false,
-		DiskSize:     50,
-		DeviceName:   "/dev/xvda",
+		Source:         "qtp",
+		ImageId:        "ami-09ac7e749b0a8d2a1",
+		InstanceType:   "t2.micro",
+		DryRun:         false,
+		RootDiskSize:   20,
+		DeviceDiskSize: 0,
+		DeviceName:     "/dev/sdb",
 	}
 
 	err := c.ShouldBind(createParam)
@@ -73,13 +75,35 @@ func CreateInstance(c *gin.Context, cfg *aws.Config) {
 
 	keyName := createParam.UserName + "-" + createParam.Source
 
-	blockDeviceMapping := &types.BlockDeviceMapping{
-		DeviceName: aws.String(createParam.DeviceName),
+	rootDeviceName, err := getAmiImageDevice(client, createParam.ImageId)
+	if err != nil {
+		log.Println(err)
+		ReturnErrorBody(c, 1, "Got an error getting image root device name.", err)
+		return
+	}
+
+	rootDevice := &types.BlockDeviceMapping{
+		DeviceName: aws.String(rootDeviceName),
 		Ebs: &types.EbsBlockDevice{
 			DeleteOnTermination: aws.Bool(true),
-			VolumeSize:          aws.Int32(createParam.DiskSize),
+			VolumeSize:          aws.Int32(createParam.RootDiskSize),
 			VolumeType:          "gp3",
 		},
+	}
+
+	// blockDeviceMapping[0] = *rootDevice
+	blockDeviceMapping := []types.BlockDeviceMapping{*rootDevice}
+
+	if createParam.DeviceDiskSize != 0 {
+		blockDevice := &types.BlockDeviceMapping{
+			DeviceName: aws.String(createParam.DeviceName),
+			Ebs: &types.EbsBlockDevice{
+				DeleteOnTermination: aws.Bool(true),
+				VolumeSize:          aws.Int32(createParam.DeviceDiskSize),
+				VolumeType:          "gp3",
+			},
+		}
+		blockDeviceMapping = append(blockDeviceMapping, *blockDevice)
 	}
 
 	input := &ec2.RunInstancesInput{
@@ -87,7 +111,7 @@ func CreateInstance(c *gin.Context, cfg *aws.Config) {
 		InstanceType:        types.InstanceType(createParam.InstanceType),
 		MinCount:            aws.Int32(1),
 		MaxCount:            aws.Int32(1),
-		BlockDeviceMappings: []types.BlockDeviceMapping{*blockDeviceMapping},
+		BlockDeviceMappings: blockDeviceMapping,
 		SecurityGroupIds:    []string{"sg-0f044b5adec791eb3"},
 		// SecurityGroups:   []string{"ec2-default-sg"},
 		SubnetId: aws.String("subnet-020e66b15e0965ace"),
@@ -144,6 +168,25 @@ func CreateInstance(c *gin.Context, cfg *aws.Config) {
 	})
 
 	return
+}
+
+func getAmiImageDevice(client *ec2.Client, imageId string) (string, error) {
+	input := &ec2.DescribeImagesInput{
+		ImageIds: []string{imageId},
+	}
+	res, err := client.DescribeImages(context.TODO(), input)
+	if err != nil {
+		return "", err
+	}
+	if len(res.Images) > 0 {
+		imageImformation := res.Images[0]
+		if len(imageImformation.BlockDeviceMappings) > 0 {
+			fmt.Println("deviceName: ", *imageImformation.BlockDeviceMappings[0].DeviceName)
+			return *imageImformation.BlockDeviceMappings[0].DeviceName, nil
+		}
+	}
+	// fmt.Println(res)
+	return "", fmt.Errorf("Get no imformation for the image")
 }
 
 func MakeInstance(ctx context.Context, api EC2CreateInstanceAPI, input *ec2.RunInstancesInput) (*ec2.RunInstancesOutput, error) {

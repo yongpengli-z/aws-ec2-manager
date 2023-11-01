@@ -56,14 +56,14 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "instance diskSize",
-                        "name": "diskSize",
+                        "description": "instance rootDiskSize",
+                        "name": "rootDiskSize",
                         "in": "query"
                     },
                     {
-                        "type": "string",
-                        "description": "instance deviceName",
-                        "name": "deviceName",
+                        "type": "integer",
+                        "description": "instance deviceDiskSize",
+                        "name": "deviceDiskSize",
                         "in": "query"
                     },
                     {
@@ -148,6 +148,43 @@ const docTemplate = `{
                         "name": "username",
                         "in": "query",
                         "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/list": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "DList EC2 Instance.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Instance"
+                ],
+                "summary": "List EC2 Instance",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "UserName",
+                        "name": "userName",
+                        "in": "query"
                     }
                 ],
                 "responses": {

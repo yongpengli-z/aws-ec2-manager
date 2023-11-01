@@ -25,14 +25,14 @@ paths:
         in: query
         name: instanceType
         type: string
-      - description: instance diskSize
+      - description: instance rootDiskSize
         in: query
-        name: diskSize
+        name: rootDiskSize
         type: integer
-      - description: instance deviceName
+      - description: instance deviceDiskSize
         in: query
-        name: deviceName
-        type: string
+        name: deviceDiskSize
+        type: integer
       - description: user department
         in: query
         name: department
@@ -97,6 +97,29 @@ paths:
       security:
       - Bearer: []
       summary: Create a keyPair
+      tags:
+      - Instance
+  /list:
+    post:
+      consumes:
+      - application/json
+      description: DList EC2 Instance.
+      parameters:
+      - description: UserName
+        in: query
+        name: userName
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      summary: List EC2 Instance
       tags:
       - Instance
   /reboot:
