@@ -12,4 +12,4 @@ vet: ## Run go vet against code
 	go vet ./...
 
 build: fmt vet
-	CGO_ENABLED=0 go build -mod=readonly vendor -o aws-ec2-manager main.go
+	CGO_ENABLED=0 go build -mod=vendor -o aws-ec2-manager main.go
