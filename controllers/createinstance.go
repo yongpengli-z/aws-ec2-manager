@@ -140,8 +140,16 @@ func CreateInstance(c *gin.Context, cfg *aws.Config) {
 				Value: aws.String(createParam.UserName),
 			},
 			{
-				Key:   aws.String("cost/business/" + createParam.Source),
-				Value: aws.String("true"),
+				Key:   aws.String("cost/business-name"),
+				Value: aws.String(createParam.Source),
+			},
+			{
+				Key:   aws.String("cost/service-name"),
+				Value: aws.String("ec2"),
+			},
+			{
+				Key:   aws.String("cost/env"),
+				Value: aws.String("uat"),
 			},
 			{
 				Key:   aws.String("cost/org/" + createParam.Department),
