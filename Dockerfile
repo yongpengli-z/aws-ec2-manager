@@ -8,4 +8,4 @@ WORKDIR /app
 RUN apk update && apk add tzdata
 RUN mkdir -p /app/docs
 COPY --from=builder  /app/aws-ec2-manager /app
-COPY --from=builder  /app/docs/* /app/docs
+COPY --from=builder  /app/docs/* /app/docs/
